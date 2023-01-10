@@ -1,0 +1,12 @@
+.centered {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    display: grid;
+    
+  }
+
+.item {
+    padding-top: 5px;
+}
