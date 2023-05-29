@@ -12,8 +12,6 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
 
     List<Room> findByHotelId(Integer hotel_id);
 
-    List<Room> findByHotelId(Integer hotel_id, Pageable var1);
-
     Room findByHotelIdAndRoomNumber(Integer hotel_id, Integer number);
 
     @Transactional

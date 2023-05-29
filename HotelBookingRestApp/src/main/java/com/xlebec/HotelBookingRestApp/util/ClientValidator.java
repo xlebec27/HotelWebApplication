@@ -27,9 +27,9 @@ public class ClientValidator implements Validator {
         Client client = (Client) o;
 
         if (clientService.findByName(client.getName()).isPresent())
-            errors.rejectValue("name", "Такой человек уже зарегистрирован");
+            errors.rejectValue("name", "This person is already registered");
         if (clientService.findByEmailOrPhone(client.getEmail(), client.getPhoneNumber()).isPresent())
-            errors.rejectValue("name", "На данную почту или телефон уже зарегистрирован человек");
+            errors.rejectValue("name", "This email or phone is already registered");
     }
 
 }

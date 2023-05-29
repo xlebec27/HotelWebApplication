@@ -4,6 +4,8 @@ import com.xlebec.HotelBookingRestApp.dto.BookingDTO;
 import com.xlebec.HotelBookingRestApp.models.Booking;
 import com.xlebec.HotelBookingRestApp.services.BookingService;
 import com.xlebec.HotelBookingRestApp.services.ClientService;
+import com.xlebec.HotelBookingRestApp.services.HotelService;
+import com.xlebec.HotelBookingRestApp.services.RoomService;
 import com.xlebec.HotelBookingRestApp.util.BookingValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,22 +29,32 @@ public class BookingsController {
 
     private final ClientService clientService;
 
+    private final RoomService roomService;
+
+    private final HotelService hotelService;
+
     private final ModelMapper modelMapper;
 
     private final BookingValidator bookingValidator;
 
     @Autowired
     public BookingsController(BookingService bookingService, BookingValidator bookingValidator,
-                              ModelMapper modelMapper, ClientService clientService) {
+                              ModelMapper modelMapper, ClientService clientService,
+                              RoomService roomService, HotelService hotelService) {
         this.bookingService = bookingService;
         this.bookingValidator = bookingValidator;
         this.modelMapper = modelMapper;
         this.clientService = clientService;
+        this.roomService = roomService;
+        this.hotelService = hotelService;
     }
 
     @PostMapping("/book")
     public ResponseEntity<HttpStatus> book(@RequestBody @Valid BookingDTO bookingDTO, BindingResult bindingResult) {
         Booking bookingToAdd = convertToBooking(bookingDTO);
+        bookingToAdd.setClient(clientService.findByName(bookingDTO.getClientName()).get());
+        bookingToAdd.setRoom(roomService.findByHotelIdAndRoomNumber(hotelService.findIdByName(bookingDTO.getHotelName()),
+                bookingDTO.getRoomNumber()));
         bookingValidator.validate(bookingToAdd, bindingResult);
         if (bindingResult.hasErrors())
             returnErrorsToClient(bindingResult);
@@ -52,7 +64,7 @@ public class BookingsController {
 
     @GetMapping(value = "/{id}")
     public BookingDTO getBooking(@PathVariable("id") Integer id){
-        return modelMapper.map(bookingService.findById(id), BookingDTO.class);
+        return convertToBookingDTO(bookingService.findById(id).get());
     }
 
     @DeleteMapping(value = "/{id}")
@@ -66,7 +78,9 @@ public class BookingsController {
     }
 
     private BookingDTO convertToBookingDTO(Booking booking) {
-        return modelMapper.map(booking, BookingDTO.class);
+        BookingDTO bookingToGet = modelMapper.map(booking, BookingDTO.class);
+        bookingToGet.setHotelName(booking.getRoom().getHotel().getName());
+        return bookingToGet;
     }
 
     private Booking convertToBooking(BookingDTO bookingDTO) {

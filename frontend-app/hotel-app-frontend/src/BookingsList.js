@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Container, Table } from 'reactstrap';
+import { ButtonGroup, Container, Table } from 'reactstrap';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import "./Table.css";
+import Button from '@mui/material/Button';
 
 export default function BookingsList(){
 
@@ -25,8 +26,11 @@ export default function BookingsList(){
         navigate("/clients/" + name + "/bookings/add")
     }
 
-    async function deletBooking(id) {
-        const res = await fetch(`http://localhost:8080/bookings/${id}`, {method: 'DELETE', mode: 'cors'});
+    async function deleteBooking(id) {
+        const res = await fetch(`http://localhost:8080/bookings/${id}`, {method: 'DELETE', mode: 'cors', 
+                headers: {
+                    'Authorization': 'Bearer' + localStorage.getItem('jwt')
+                }});
     }
 
     const bookingsList = bookings.map(bookings => {
@@ -37,8 +41,8 @@ export default function BookingsList(){
             <td>{bookings?.bookingPrice}</td>
             <td>{bookings?.clientName}</td>
             <td>{bookings?.roomNumber}</td>
-            <td>{bookings?.hotel}</td>
-            <td><button onClick={() => deletBooking(bookings?.id)}>Delete</button></td>
+            <td>{bookings?.hotelName}</td>
+            <td><Button variant="contained" size="small" color="error" onClick={() => deleteBooking(bookings?.id)}>Delete</Button></td>
         </tr>
     });
 
@@ -50,7 +54,7 @@ export default function BookingsList(){
                 <Table className="mt-4">
                     <thead>
                     <tr>
-                        <th width="30%">Id</th>
+                        <th width="5%">Id</th>
                         <th width="30%">Arrival Date</th>
                         <th width="30%">Departure Date</th>
                         <th width="30%">Booking Price</th>

@@ -1,16 +1,10 @@
-import React, { Component } from 'react';
-import './App.css';
-import { Link } from 'react-router-dom';
-import { Button, Container } from 'reactstrap';
+import React from 'react';
+
+import LoginPage from './LoginPage';
 
 function Home() {
     return (
-        <div>
-            <Container fluid>
-                <Button color="link"><Link to="/clients">Clients</Link></Button>
-                <Button color="link"><Link to="/hotels">Hotels</Link></Button>
-            </Container>
-        </div>
+        <LoginPage></LoginPage>
     );
 }
 

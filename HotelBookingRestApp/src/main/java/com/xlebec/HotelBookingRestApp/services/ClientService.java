@@ -32,6 +32,9 @@ public class ClientService {
         return clientRepository.findByEmailOrPhoneNumber(email, phone);
     }
 
+    public Optional<Client> findByEmail(String email){
+        return clientRepository.findByEmail(email);
+    }
     public List<Client> findAll(){
         return clientRepository.findAll();
     }

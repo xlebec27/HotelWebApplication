@@ -18,6 +18,7 @@ export default function HotelAdd(){
         }),
         headers: {
            'Content-type': 'application/json; charset=UTF-8',
+           'Authorization': 'Bearer ' + localStorage.getItem('jwt')
         },
         })
     }
@@ -45,7 +46,7 @@ export default function HotelAdd(){
                 </select>
             </label >
             <br/>
-            <input type="submit" value="Submit" onClick={addPosts} className="item"/>
+            <button onClick={addPosts}>Add hotel</button>
         </div>
     )      
 }

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Container, Table } from 'reactstrap';
+import { ButtonGroup, Container, Table } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import "./Table.css";
-
-
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 
 export default function ClientList() {
 
@@ -36,26 +36,32 @@ export default function ClientList() {
     }
 
     async function deleteClient(name) {
-        const res = await fetch(`http://localhost:8080/clients/${name}`, {method: 'DELETE', mode: 'cors'});
+        const res = await fetch(`http://localhost:8080/clients/${name}`, {method: 'DELETE', mode: 'cors',
+            headers: {
+                'Authorization': 'Bearer' + localStorage.getItem('jwt')
+            }
+            });
     }
 
 
 
-    const clientList = () => clients?.map(client => {
+    const clientList = clients?.map(client => {
                 return <tr key={client?.name}>
                     <td style={{whiteSpace: 'nowrap'}}>{client?.name}</td>
                     <td>{client?.email}</td>
                     <td>{client?.phoneNumber}</td>
                     <td>
-                        <button onClick={() => deleteClient(client?.name)}>Delete</button>
-                        <button onClick={() => openBookings(client?.name)}>Bookings</button>
+                        <Stack direction="row" spacing={2}>
+                        <Button variant="contained" size="small" color="error" onClick={() => deleteClient(client?.name)}>Delete</Button>
+                        <Button variant="outlined" size="small" onClick={() => openBookings(client?.name)}>Bookings</Button>
+                        </Stack>
                     </td>
                 </tr>
             });
     
         return (
             <div className='table'>
-                <button onClick={addClient}>Create</button>
+                <Button variant="contained" onClick={addClient}>Create</Button>
                 <Container fluid>
                     <h3>Clients</h3>
                     <Table className="mt-4">
@@ -67,7 +73,7 @@ export default function ClientList() {
                         </tr>
                         </thead>
                         <tbody>
-                        {clientList()}
+                        {clientList}
                         </tbody>
                     </Table>
                 </Container>

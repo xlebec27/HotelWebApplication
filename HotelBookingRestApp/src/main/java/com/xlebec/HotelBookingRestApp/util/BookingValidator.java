@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.List;
+import java.util.Optional;
+
 @Component
 public class BookingValidator implements Validator {
 
@@ -25,7 +28,13 @@ public class BookingValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors){
         Booking booking = (Booking) o;
-
-        //WIP
+        if (booking.getArrivalDate().after(booking.getDepartureDate()))
+            errors.rejectValue("arrivalDate", "Wrong date");
+        Optional<Booking> startDate = bookingService.getBookedInDateForRoom(booking.getArrivalDate(), booking.getRoom().getId());
+        if (startDate.isPresent())
+            errors.rejectValue("arrivalDate", "Room is already booked for this time");
+        Optional<Booking> endDate = bookingService.getBookedInDateForRoom(booking.getDepartureDate(), booking.getRoom().getId());
+        if (endDate.isPresent())
+            errors.rejectValue("departureDate", "Room is already booked for this time");
     }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useCallback } from "react-router-dom";
 import "./AddMenuStyling.css";
 import DatePicker from "react-datepicker";
+import { Button } from 'react-bootstrap';
 import "react-datepicker/dist/react-datepicker.css";
 
 export default function BookingAdd(){
@@ -52,6 +53,7 @@ export default function BookingAdd(){
     }, [setHotel]);
 
     const addPosts = () => {
+        console.log(hotel);
         fetch(`http://localhost:8080/bookings/book`, {
         method: 'POST',
         body: JSON.stringify({
@@ -60,7 +62,7 @@ export default function BookingAdd(){
            bookingPrice: bookingPrice,
            clientName: name,
            roomNumber: roomNumber,
-           hotel: hotel 
+           hotelName: hotel 
         }),
         headers: {
            'Content-type': 'application/json; charset=UTF-8',
@@ -76,7 +78,7 @@ export default function BookingAdd(){
     //         }, [setHotel]);
     // }
 
-    const hotelsList = () => hotels?.map(hotels => {
+    const hotelsList =  hotels?.map(hotels => {
         return <option value={hotels?.name} key={hotels?.name}>{hotels?.name}</option>
     });
 
@@ -96,7 +98,7 @@ export default function BookingAdd(){
             Hotel
             <label className="item">
                 <select onChange={e => setHotel(e.target.value)}>
-                {hotelsList()}
+                {hotelsList}
                 </select>
             </label >
             <br/>
@@ -109,9 +111,10 @@ export default function BookingAdd(){
                 startDate={arrivalDate} endDate={departureDate} selectsRange inline
             />
             <br/>
+            Booking Price
             <input type="text" onChange={e => setBookingPrice(e.target.value)}/>
             <br/>
-            <input type="submit" value="Submit" onClick={addPosts} className="item"/>
+            <Button variant="primary" value="Submit" onClick={() => {addPosts()}} className="item">Book</Button>
         </div>
     )  
 }
