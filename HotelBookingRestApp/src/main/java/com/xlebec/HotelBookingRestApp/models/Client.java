@@ -28,13 +28,16 @@ public class Client {
     @NotNull(message = "Пол не выбран")
     private Boolean gender;
 
-    @Column(name = "children")
-    @NotNull()
-    private Boolean kid;
+    public String getPassword() {
+        return password;
+    }
 
-//    @Column(name = "password")
-//    @NotEmpty
-//    private String password;
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "role")
+    private String role;
+
 
     public Integer getId() {
         return id;
@@ -44,12 +47,14 @@ public class Client {
 
     }
 
-    public Client(String name, String email, String phoneNumber, boolean gender, boolean kid) {
+    public Client(String name, String email, String phoneNumber, boolean gender, String password,
+                  String role) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
-        this.kid = kid;
+        this.password = password;
+        this.role = role;
     }
 
     public void setId(Integer id) {
@@ -88,19 +93,17 @@ public class Client {
         this.gender = gender;
     }
 
-    public Boolean getKid() {
-        return kid;
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public void setKid(Boolean kid) {
-        this.kid = kid;
+    public String getRole() {
+        return role;
     }
 
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
+    public void setRole(String role) {
+        this.role = role;
+    }
+
 }

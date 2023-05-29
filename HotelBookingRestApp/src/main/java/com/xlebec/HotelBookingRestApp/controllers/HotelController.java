@@ -42,9 +42,9 @@ public class HotelController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{id}")
-    public void deleteClient(@PathVariable Integer id){
-        hotelService.deleteById(id);
+    @DeleteMapping(value = "/{name}")
+    public void deleteClient(@PathVariable String name){
+        hotelService.deleteByName(name);
     }
 
     private HotelDTO convertToHotelDTO(Hotel hotel){

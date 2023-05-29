@@ -13,9 +13,9 @@ public class ErrorsUtil {
         for (FieldError error : errors) {
             errorMsg.append(error.getField())
                     .append(" - ").append(error.getDefaultMessage() == null ? error.getCode() : error.getDefaultMessage())
-                    .append(";");
+                    .append("; ");
         }
 
-        throw new MeasurementException(errorMsg.toString());
+        throw new GeneralException(errorMsg.toString());
     }
 }

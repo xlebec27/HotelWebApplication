@@ -1,24 +1,25 @@
 package com.xlebec.HotelBookingRestApp.security;
 
+import com.xlebec.HotelBookingRestApp.config.JWTFilter;
+import com.xlebec.HotelBookingRestApp.services.ClientDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import java.util.Arrays;
 
 //@Configuration
 //@EnableWebMvc
@@ -69,7 +70,15 @@ import java.util.Arrays;
 
 @EnableWebSecurity
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
+
+    private final JWTFilter jwtFilter;
+
+    @Autowired
+    public WebSecurityConfig(JWTFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -83,35 +92,52 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
-//        httpSecurity.authorizeRequests()
-//                .antMatchers("/auth/login", "/auth/registration").permitAll()
-//                .antMatchers("/app/*").hasAnyRole()
+        httpSecurity
+                .authorizeRequests()
+                //.antMatchers("/admin").hasRole("ADMIN")
+                .antMatchers("/auth/login", "/auth/registration", "/error").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/hotels").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/hotels").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/rooms/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/rooms").hasRole("ADMIN")
 //                .and()
-//                .formLogin()
-//                .loginPage("/auth/login")
+//                .formLogin().loginPage("/auth/login")
 //                .loginProcessingUrl("/process_login")
-//                .defaultSuccessUrl("/app/", true)
+//                .defaultSuccessUrl("/hello", true)
+//                .failureUrl("/auth/login?error")
 //                .and()
 //                .logout()
 //                .logoutUrl("/logout")
-//                .and()
-//                .csrf()
-//                .and()
-//                .exceptionHandling()
-//                .accessDeniedPage("/app/forbidden");
-//        return httpSecurity.build();
-        httpSecurity.csrf().disable();
+//                .logoutSuccessUrl("/auth/login")
+                .and()
+                .cors()
+                .and()
+                .csrf().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 
 
-//    @Bean
-//    public PasswordEncoder getPasswordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+
+    //https://github.com/spring-projects/spring-framework/issues/29215
+    //https://stackoverflow.com/questions/74281518/java-lang-stackoverflowerror-null-when-trying-to-create-a-spring-rest-api
 //    @Bean
 //    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 //        return authenticationConfiguration.getAuthenticationManager();
 //    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(ClientDetailsService myUserDetailsService, PasswordEncoder encoder) {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(myUserDetailsService);
+        provider.setPasswordEncoder(encoder);
+        return new ProviderManager(provider);
+    }
 }

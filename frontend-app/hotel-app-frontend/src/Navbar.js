@@ -28,6 +28,9 @@ export default function Navbar(){
                     <li className="nav-item">
                         <NavLink to="/clients" className={({ isActive }) => "nav-links" + (isActive ? " activated" : "")}>Clients</NavLink>
                     </li>
+                    <li className="nav-item position-absolute top-5 end-0">
+                        <NavLink to="/profile" className={({ isActive }) => "nav-links" + (isActive ? " activated" : "")}>Profile</NavLink>
+                    </li>
                 </ul>
             </div>
         </nav>

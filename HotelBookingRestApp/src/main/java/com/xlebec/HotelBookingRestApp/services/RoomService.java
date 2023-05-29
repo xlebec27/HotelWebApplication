@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,12 +25,12 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
-    public List<Room> findByHotelId(Integer id){
-        return roomRepository.findByHotelId(id);
+    public Optional<Room> findById(Integer id) {
+        return roomRepository.findById(id);
     }
 
-    public List<Room> findByHotelIdPageable(Integer id, Integer page){
-        return roomRepository.findByHotelId(id, PageRequest.of(page, 20));
+    public List<Room> findByHotelId(Integer id){
+        return roomRepository.findByHotelId(id);
     }
 
     public Room findByHotelIdAndRoomNumber(Integer id, Integer room){

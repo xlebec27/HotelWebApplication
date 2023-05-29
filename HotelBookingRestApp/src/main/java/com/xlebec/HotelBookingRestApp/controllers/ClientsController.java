@@ -34,6 +34,7 @@ public class ClientsController {
         this.modelMapper = modelMapper;
     }
 
+    @CrossOrigin
     @PostMapping("/register")
     public ResponseEntity<HttpStatus> register(@RequestBody @Valid ClientDTO clientDTO,
                                                    BindingResult bindingResult) {
@@ -58,6 +59,7 @@ public class ClientsController {
         return modelMapper.map(clientService.findById(id), ClientDTO.class);
     }
 
+    @CrossOrigin
     @GetMapping
     public List<ClientDTO> getClients(){
         return clientService.findAll().stream().map(this::convertToClientDTO).collect(Collectors.toList());

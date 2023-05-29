@@ -34,7 +34,7 @@ public class BookingDTO {
     private Integer roomNumber;
 
     @NotNull
-    private String hotel;
+    private String hotelName;
 
 
     public Date getArrivalDate() {
@@ -77,11 +77,11 @@ public class BookingDTO {
         this.roomNumber = roomNumber;
     }
 
-    public String getHotel() {
-        return hotel;
+    public String getHotelName() {
+        return hotelName;
     }
 
-    public void setHotel(String hotel) {
-        this.hotel = hotel;
+    public void setHotelName(String hotelName) {
+        this.hotelName = hotelName;
     }
 }

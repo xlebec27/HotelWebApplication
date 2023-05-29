@@ -17,8 +17,8 @@ public class ClientDTO {
     @NotNull(message = "Пол не выбран")
     private Boolean gender;
 
-    @NotNull()
-    private Boolean kid;
+
+    private String password;
 
     public String getName() {
         return name;
@@ -52,11 +52,12 @@ public class ClientDTO {
         this.gender = gender;
     }
 
-    public Boolean getKid() {
-        return kid;
+
+    public String getPassword() {
+        return password;
     }
 
-    public void setKid(Boolean kid) {
-        this.kid = kid;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

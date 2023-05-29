@@ -35,6 +35,6 @@ public class HotelService {
     public void save(Hotel hotel){ hotelRepository.save(hotel);}
 
     @Transactional
-    public void deleteById(Integer id){hotelRepository.deleteById(id);}
+    public void deleteByName(String name){hotelRepository.deleteByName(name);}
 
 }

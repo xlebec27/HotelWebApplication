@@ -37,6 +37,7 @@ public class RoomsController {
         this.modelMapper = modelMapper;
     }
 
+    @CrossOrigin
     @GetMapping()
     public List<RoomDTO> getRooms(){
         return roomService.findAll().stream().map(this::convertToRoomDTO).collect(Collectors.toList());
@@ -44,11 +45,12 @@ public class RoomsController {
 
     @CrossOrigin
     @GetMapping(value = "/hotel/{name}")
-    public List<RoomDTO> getRoomsInHotel(@PathVariable String name, @RequestParam("page") Integer page){
-        return roomService.findByHotelIdPageable(hotelService.findIdByName(name), page).
+    public List<RoomDTO> getRoomsInHotel(@PathVariable String name){
+        return roomService.findByHotelId(hotelService.findIdByName(name)).
                 stream().map(this::convertToRoomDTO).collect(Collectors.toList());
     }
 
+    @CrossOrigin
     @GetMapping(value = "/hotel/{name}/{room}")
     public RoomDTO getRoomInHotelByNumber(@PathVariable String name, @PathVariable Integer room){
         return convertToRoomDTO(roomService.findByHotelIdAndRoomNumber(hotelService.findIdByName(name), room));
@@ -60,6 +62,7 @@ public class RoomsController {
         return roomService.findByHotelId(id).stream().map(this::convertToRoomDTO).collect(Collectors.toList());
     }
 
+    @CrossOrigin
     @PostMapping()
     public ResponseEntity<HttpStatus> book(@RequestBody @Valid RoomDTO roomDTO) {
         Room roomToAdd = modelMapper.map(roomDTO, Room.class);
@@ -68,6 +71,7 @@ public class RoomsController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @CrossOrigin
     @DeleteMapping(value = "/{hotelName}/{number}")
     public void deleteRoom(@PathVariable String hotelName, @PathVariable Integer number){
         roomService.deleteByHotelIdAndNumber(hotelService.findIdByName(hotelName), number);

@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
+
 @Entity
 @Table(name = "booking")
 public class Booking {
@@ -24,6 +25,7 @@ public class Booking {
     @Column(name = "price")
     private Double bookingPrice;
 
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "client_id", referencedColumnName = "id")
@@ -34,16 +36,29 @@ public class Booking {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
+    public String getHotelName() {
+        return hotelName;
+    }
+
+    public void setHotelName(String hotelName) {
+        this.hotelName = hotelName;
+    }
+
+    @NotNull
+    @Column(name = "hotel_name")
+    private String hotelName;
+
     public Booking() {
 
     }
 
-    public Booking(Date arrivalDate, Date departureDate, Double bookingPrice, Client client, Room room) {
+    public Booking(Date arrivalDate, Date departureDate, Double bookingPrice, Client client, Room room, String hotelName) {
         this.arrivalDate = arrivalDate;
         this.departureDate = departureDate;
         this.bookingPrice = bookingPrice;
         this.client = client;
         this.room = room;
+        this.hotelName = hotelName;
     }
 
     public Integer getId() {
